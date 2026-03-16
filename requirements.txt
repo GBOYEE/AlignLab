@@ -1,0 +1,3 @@
+hive-messenger>=0.1
+jsonlines
+requests
