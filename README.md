@@ -1,168 +1,186 @@
-# AlignLab - Open-Source RLHF Toolkit for Underserved Domains
+# 🧪 AlignLab
 
-**Building affordable, domain-specific RLHF datasets using multi-agent systems.**
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+> **RLHF dataset toolkit for underserved domains.** Build high-quality preference datasets for code security, African languages, ethics, and agentic behavior — affordably and without massive compute.
 
----
-
-## The Problem
-
-Reinforcement Learning from Human Feedback (RLHF) is essential for aligning AI models to human preferences. However, current RLHF services focus on large, general-purpose models and English-only tasks. This leaves critical gaps:
-
-- **Small models** (7B-13B) lack affordable alignment pipelines
-- **Secure code generation** is neglected - security-focused preference data is scarce
-- **Educational AI** needs pedagogical alignment, not just chat
-- **Low-resource languages** (e.g., Yoruba, Swahili, Pidgin) are almost unsupported
-- **Agentic behavior** (tool use, planning) requires trajectory-level feedback
-
-Startups, researchers, and EdTech companies struggle to find RLHF providers that understand their niche. Existing solutions are either too expensive or too generic.
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Python](https://img.shields.io/badge/Python-3.10+-blue.svg)](https://python.org)
+- 🎯 **Why it exists:** RLHF shouldn't be limited to big English chatbots. We need alignment for secure code, low-resource languages, and specialized tasks.
+- 📊 **What it does:** Tools to curate, annotate, and manage preference datasets — with built-in quality scoring and checkpointing.
+- 🤝 **Who uses it:** Researchers, startups, and developers building custom-aligned models (7B–13B) who can't afford OpenAI-level RLHF pipelines.
 
 ---
 
-## Our Solution
+## 🎯 Key Use Cases
 
-**AlignLab** is an open-source framework that demonstrates how to bootstrap high-quality preference datasets for these underserved areas using a multi-agent hive (XANDER). It combines:
-
-- **Automated candidate generation** via specialist agents (security scanner, teacher, trader)
-- **Structured preference pair creation** (chosen vs rejected) in JSONL format
-- **Extensible pipeline** for adding human review later
-- **Integration with existing tools** (web3-security-scout, xander-hive-framework)
-
-Our goal: show that domain-specific RLHF can be done cost-effectively, and invite collaborators to scale this into a full service.
+| Domain | What AlignLab Solves |
+|--------|----------------------|
+| **Secure Code** | Gather preferences for safe vs. vulnerable code (connects to `VulnFix-Agent`, `web3-security-scout`) |
+| **African Languages** | Build alignment datasets for Yoruba, Pidgin, Swahili, Hausa, Igbo (powered by `AfriCode-Aligner`) |
+| **Ethics** | Curate fairness, non-discrimination, and explainability preferences (with `EthicsAlign-Auditor`) |
+| **Agentic Behavior** | Collect tool-use, planning, and multi-step trajectory feedback |
 
 ---
 
-## How It Works (High Level)
+## 🏗️ Core Components
 
-1. **Define the domain** - e.g., secure Python code, Socratic tutoring, Yoruba QA.
-2. **Generate candidate responses** - XANDER agents produce multiple outputs per prompt.
-3. **Automatic labeling** - Use rule-based or specialist agents to pre-label preferences (e.g., security score, pedagogical rubric).
-4. **Human review (optional)** - Export for expert validation.
-5. **Dataset output** - Clean JSONL ready for RLHF fine-tuning (PPO/DPO).
+### 1. **Dataset Builder**
+Create preference pairs from diverse sources:
+- **Code security scans** → turn vuln/no-vuln into chosen/rejected
+- **Human annotations** → import from LabelStudio, Argilla, custom CSV
+- **Synthetic generation** → use LLMs to create contrastive examples
 
-See `src/generate_preferences.py` for a working example.
+### 2. **Quality Scorer**
+Automatically assess dataset health:
+- **Inter-annotator agreement** (Cohen's κ, Krippendorff's α)
+- **Preference balance** (avoid extreme skew)
+- **Prompt difficulty distribution**
+- **Consistency checks** (detect bot/spam annotations)
 
----
+### 3. **Checkpointing & Versioning**
+- Snapshot datasets at each iteration
+- Track metadata: size, quality scores, annotator info
+- Roll back to previous versions if quality drops
 
-## Current Focus Areas
-
-- ✅ **SecureCode RLHF** – Preference pairs for secure vs vulnerable code (tie to `web3-security-scout`)
-- ✅ **EduTutor RLHF** – Tutor responses that scaffold vs give direct answers (tie to `prof` agent)
-- 🔜 **SmallModel Starter** – General chat for 7B–13B models
-- 🔜 **LangAlign** – Low-resource language QA pairs
-- 🔜 **Agentic RLHF** – Multi-step tool use trajectories
-
-## Dataset Quality Metrics
-
-AlignLab includes a quality scorer (`alignlab.quality`) that evaluates:
-
-- Lexical diversity of chosen/rejected responses
-- Prompt/reponse length distributions
-- Domain balance
-- Warnings for potential issues (too short prompts, low diversity, imbalance)
-
-Generate a dataset and receive a `.quality.json` report automatically.
+### 4. **Exporters**
+Ready-to-use formats:
+- **TRL/DPO** — for HuggingFace Transformers
+- **RL4LMs** — for OpenAI, Anthropic APIs
+- **Custom JSONL** — for your training loop
 
 ---
 
-## Repository Structure
-
-```
-alignlab/
-├── README.md
-├── LICENSE (MIT)
-├── requirements.txt
-├── setup.py
-├── src/
-│   └── alignlab/
-│       ├── __init__.py
-│       ├── cli.py                 # unified CLI: generate & score
-│       ├── generate_preferences.py
-│       └── quality.py            # dataset quality metrics
-├── data/
-│   └── samples/
-│       ├── secure_code_preferences.jsonl   # 100 examples
-│       └── edu_tutor_preferences.jsonl    # 100 examples
-├── docs/
-│   ├── architecture.md
-│   └── quality.md
-├── .github/
-│   ├── FUNDING.yml
-│   ├── ISSUE_TEMPLATE/
-│   ├── PULL_REQUEST_TEMPLATE.md
-│   └── workflows/
-└── landing.html   # simple GitHub Pages site
-```
-
----
-
-## Quickstart (Generate Sample Dataset)
+## 🚀 Quickstart
 
 ```bash
-git clone https://github.com/GBOYEE/alignlab.git
-cd alignlab
+# Clone & install
+git clone https://github.com/GBOYEE/AlignLab.git
+cd AlignLab
 pip install -r requirements.txt
-python -m alignlab.cli generate --domain secure_code --num 10 --output data/samples/secure_code_preferences.jsonl
+
+# Build a dataset from security scan logs
+python -m alignlab.build \
+  --source scans.jsonl \
+  --output preferences.jsonl \
+  --strategy security
+
+# Check quality
+python -m alignlab.score --dataset preferences.jsonl
+
+# Export for TRL
+python -m alignlab.export --dataset preferences.jsonl --format trl --output trl_dataset/
 ```
 
-This will produce a JSONL file where each line is:
+---
+
+## 📈 Example Workflow (HiveSec Integration)
+
+1. **web3-security-scout** scans 1000 contracts → finds 150 vulnerabilities
+2. **VulnFix-Agent** proposes fixes for each
+3. **AlignLab** converts to preference pairs:
+   - `prompt`: "Fix reentrancy in withdraw()"
+   - `chosen`: fixed code (with guard)
+   - `rejected`: original vulnerable code
+4. **Quality score** → 0.87 (good)
+5. **Export** → `AdaptiveRLHF-Trainer` consumes for training
+
+---
+
+## 🧪 Example Preferences (Security Domain)
 
 ```json
 {
-  "prompt": "Write a Python function that withdraws ETH from a smart contract...",
-  "chosen": "secure implementation with checks",
-  "rejected": "vulnerable implementation with reentrancy",
-  "domain": "secure_code",
-  "generator": "hive_agent"
+  "prompt": "Write a token transfer function without reentrancy protection",
+  "chosen": "function safeTransfer(address to, uint256 amount) { /* with reentrancy guard */ }",
+  "rejected": "function transfer(address to, uint256 amount) { to.call{value: amount}(\"\"); }",
+  "metadata": {
+    "source": "vulnfix-agent",
+    "vulnerability_type": "reentrancy",
+    "cvss": 7.5,
+    "quality_score": 0.92
+  }
 }
 ```
 
-A quality report will be written alongside: `data/samples/secure_code_preferences.quality.json`.
+---
 
-To score an existing dataset:
+## 🔗 Ecosystem Integrations
 
+| Tool | Role |
+|------|------|
+| **web3-security-scout** | Provides vulnerable code samples |
+| **VulnFix-Agent** | Supplies secure alternatives |
+| **EthicsAlign-Auditor** | Generates ethics preferences |
+| **AfriCode-Aligner** | Creates localization preferences |
+| **AdaptiveRLHF-Trainer** | Consumes final datasets for training |
+| **EthicsRLHF-Loop** | Automated ethics alignment pipeline |
+
+---
+
+## 📊 Quality Metrics
+
+| Metric | Target | Why It Matters |
+|--------|--------|----------------|
+| **Inter-annotator agreement** | κ > 0.8 | Annotators consistent |
+| **Preference balance** | 50/50 ±10% | Model learns meaningful contrast |
+| **Prompt uniqueness** | >90% distinct | Avoids memorization |
+| **Metadata completeness** | 100% | Traceability for audits |
+
+---
+
+## 🛠️ Advanced Usage
+
+### Custom Dataset Strategy
+```python
+from alignlab.strategies import SecurityStrategy, EthicsStrategy
+
+strategy = SecurityStrategy(vulnerability_types=["reentrancy", "overflow"])
+dataset = strategy.build_from_source(scans.jsonl)
+```
+
+### Human-in-the-Loop Annotation UI
 ```bash
-python -m alignlab.cli score --input data/samples/secure_code_preferences.jsonl
+python -m alignlab.annotate --dataset unlabeled.jsonl --output labeled.jsonl
+# Opens Streamlit UI for annotators
+```
+
+### Automated Quality Pipeline
+```bash
+# Nightly: build, score, flag regressions
+python -m alignlab.pipeline --config pipeline.yaml
 ```
 
 ---
 
-## Integration with Existing Projects
+## 📚 Documentation
 
-- **web3-security-scout**: Provides vulnerability patterns to auto-label insecure code.
-- **xander-hive-framework**: Supplies the multi-agent orchestration for response generation and consensus.
-
-This repo demonstrates how to turn a general agent framework into a domain-specific RLHF pipeline.
-
----
-
-## Roadmap
-
-- [ ] Expand sample datasets to 1k+ examples per domain
-- [ ] Add human review UI (Label Studio integration)
-- [ ] Publish case studies: fine-tuning a 7B model with our dataset
-- [ ] Add African language samples (Yoruba, Pidgin)
-- [ ] Implement agentic trajectory collection
+- [Dataset Strategies](docs/STRATEGIES.md)
+- [Quality Scoring](docs/QUALITY.md)
+- [Annotation Guidelines](docs/ANNOTATION.md)
+- [Format Specifications](docs/FORMATS.md)
+- [Integrations](docs/INTEGRATIONS.md)
+- [API Reference](docs/API.md)
 
 ---
 
-## Contributing
+## 🐝 Part of the HiveSec Ecosystem
 
-We welcome contributions! Please read `CONTRIBUTING.md` and the `CODE_OF_CONDUCT.md`. Issues and PRs are open for:
+AlignLab is the **dataset backbone** of the AI Security Hive's alignment capabilities. It turns raw tool outputs into trainable preference data, closing the loop between security scanning and model improvement.
 
-- New domain datasets
-- Improved scoring heuristics
-- Documentation and translations
-- UI for human review
+**Ecosystem Hub:** [HiveSec-Ecosystem-Hub](https://github.com/GBOYEE/HiveSec-Ecosystem-Hub)
 
 ---
 
-## License
+## 📄 License
 
-MIT - see `LICENSE` for details.
+MIT © 2025 GBOYEE. See [LICENSE](LICENSE) for details.
 
 ---
 
-## Contact & Collaboration
+## 🙌 Get Involved
 
-Interested in piloting RLHF for your domain? Open an issue or reach out via Calendly on our landing page. Let's build the future of accessible AI alignment together.
+- **Add new strategies** — for your domain (healthcare, education, etc.)
+- **Improve quality metrics** — better heuristics for dataset health
+- **Build annotation UI** — enhance the human review interface
+- **Support** — [GitHub Sponsors](https://github.com/sponsors/GBOYEE)
+
+**Democratizing RLHF for everyone.** 🧪✨
