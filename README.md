@@ -1,6 +1,7 @@
 # AlignLab - Open-Source RLHF Toolkit for Underserved Domains
 
 **Building affordable, domain-specific RLHF datasets using multi-agent systems.**
+[![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/GBOYEE/AlignLab/ci.yml?branch=main)](https://github.com/GBOYEE/AlignLab/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ---
@@ -166,3 +167,25 @@ MIT - see `LICENSE` for details.
 ## Contact & Collaboration
 
 Interested in piloting RLHF for your domain? Open an issue or reach out via Calendly on our landing page. Let's build the future of accessible AI alignment together.
+
+---
+
+## Development
+
+```bash
+# Install development dependencies
+make install-dev
+
+# Run tests
+make test
+
+# Format and lint
+make format
+make lint
+```
+
+---
+
+## Security
+
+See [SECURITY.md](SECURITY.md) for responsible disclosure.
