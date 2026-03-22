@@ -2,12 +2,19 @@
 
 ## Supported Versions
 
-Only the latest main branch receives security updates.
+We actively maintain the latest version on the `main` branch.
 
 ## Reporting a Vulnerability
 
-If you discover a security issue, please contact GBOYEE (gboyee@example.com) instead of opening a public issue.
+If you discover a security vulnerability in AlignLab, please report it:
 
-We aim to respond within 48 hours and will coordinate remediation.
+- **Email**: security@gboyee.dev
 
-Thank you for helping keep AlignLab safe.
+We will acknowledge receipt within 48 hours and provide a response within 7 days.
+
+## Recommendations
+
+- Keep dependencies updated (`pip list --outdated`).
+- Run in a virtual environment.
+- Use `.env` for any future API keys; never commit secrets.
+- Review generated datasets before using in production.

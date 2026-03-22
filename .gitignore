@@ -1,8 +1,35 @@
+# Python
 __pycache__/
-*.pyc
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
 venv/
-.env
+.venv/
+pip-log.txt
+pip-delete-this-directory.txt
+.tox/
+.coverage
+.coverage.*
+htmlcov/
+*.pot
+*.mo
+*.log
+*.sqlite
+*.db
+*.sqlite3
+*.egg-info/
+dist/
+build/
+__pypackages__/
+
+# IDEs
 .idea/
 .vscode/
-*.log
+*.swp
+*.swo
+
+# OS
 .DS_Store
+Thumbs.db
